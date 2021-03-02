@@ -8,7 +8,43 @@
 .screen{
     width: 360px;
     height: 300px;
-    border: 1px solid #000;
 }
+.btnWrap{
+    margin: 15px 0;
+    button{
+        background: none;
+        font-size: 40px;
+        cursor: pointer;
+        &:nth-child(1){
+            color: #fa1e0e;
+        }
+        &:nth-child(2){
+            color: #4a47a3;
+            margin: 0 20px;
+        }
+        &:nth-child(3){
+            color: #00917c;
+        }
+    }
+}
+.infoWrap{
+    margin: 10px 0;
+    color: #000;
+    text-align: center;
+    span{
+        font-size: 14px;
+    }
+    p{
+        margin: 5px 0 10px;
+        font-size: 16px;
+    }
+    .fa-redo{
+        color: #000;
+        background: none;
+        font-size: 30px;
+        cursor: pointer;
+    }
+}
+
 
 // Api
