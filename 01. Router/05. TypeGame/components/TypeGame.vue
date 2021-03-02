@@ -1,54 +1,45 @@
 <template>
   <div class="world">
-      <div class="container">
-        <div class="playerContainer">
-            <img src="../assets/question.jpg" alt="" v-if="!playerType">
-            <img :src=playerPath alt="" v-else>
-            <h2>PLAYER</h2>
-          <div class="heartWrap">
-            <img v-for="(life , i) in lifeOfPlayer" src="../assets/heart.jpg" alt="" :key="i">
-            <img v-for="(life , i) in 3 - lifeOfPlayer" src="../assets/broken-heart.jpg" alt="" :key="i">
-          </div>
-          <div class="choiceWrap">
-            <label for="fire">
-                <input type="radio" id="fire" v-model="playerType" value="fire">
-                불
-            </label>
-            <label for="water">
-                <input type="radio" id="water" v-model="playerType" value="water">
-                물
-            </label>
-            <label for="leaf">
-                <input type="radio" id="leaf" v-model="playerType" value="leaf">
-                풀
-            </label>
-          </div>
-          <div class="btns">
-              <button class="checkBtn" @click="onClickCheck">선택완료</button>
-          </div>
+    <div class="container">
+        <div class="playerWrap">
+            <div class="firstImage">
+                <img src="../assets/question.jpg" alt="" v-if="!playerPick">
+                <img :src=playerPath alt="" v-else>
+            </div>
+            <h2 class="title">PLAYER</h2>
+            <div class="lifeWrap">
+                <img v-for="(life,k) in playerLife" src="../assets/heart.jpg" alt="하트이미지" :key="k">
+                <img v-for="(life,l) in 3 - playerLife" src="../assets/broken-heart.jpg" alt="하트이미지" :key="l">
+            </div>
+            <div class="choiceWrap">
+                <button class="fas fa-fire" @click="onClickPick('fire')"></button>
+                <button class="fas fa-leaf" @click="onClickPick('leaf')"></button>
+                <button class="fas fa-tint" @click="onClickPick('water')"></button>
+            </div> 
+            <div class="infoWrap">
+                <button @click="onClickCheck" v-if="ready">선택완료</button>
+                <button v-else>기다리는중..</button>
+            </div>
         </div>
-        <div class="counter">
-            {{counter}}
+        <div class="counter">{{counter}}</div>
+        <div class="cpuWrap">
+            <div class="firstImage">
+                <img src="../assets/question.jpg" alt="" v-if="!cpuPick">
+                <img :src=cpuPath alt="" v-else>
+            </div>
+            <h2 class="title">PLAYER</h2>
+            <div class="lifeWrap">
+                <img v-for="(life,i) in cpuLife" src="../assets/heart.jpg" alt="하트이미지" :key="i">
+                <img v-for="(life,j) in 3 - cpuLife" src="../assets/broken-heart.jpg" alt="하트이미지" :key="j">
+            </div>
+            <div class="choiceWrap">
+               <p>생각하는중..</p>
+            </div> 
         </div>
-        <div class="cpuContainer">
-            <img src="../assets/question.jpg" alt="" v-if="!cpuType">
-            <img :src=cpuPath alt="" v-else>
-            <h2>CPU</h2>
-          <div class="heartWrap">
-            <img v-for="(life , i) in lifeOfCpu" src="../assets/heart.jpg" alt="" :key="i">
-            <img v-for="(life , i) in 3 - lifeOfCpu" src="../assets/broken-heart.jpg" alt="" :key="i">
-          </div>
-          <div>
-            생각중 ... 
-          </div>
-          <div class="btns">
-              <button>선택완료</button>
-          </div>
-        </div>
-      </div>
-      <ul>
-          <li v-for="(log,i) in logs" :key="i">{{log}}</li>
-      </ul>
+    </div>
+    <ul>
+        <li></li>
+    </ul>
   </div>
 </template>
 
@@ -57,61 +48,97 @@ let interval = null
 export default {
     data(){
         return{
-            playerType:null,
-            cpuType:null,
+            playerPick : null,
+            playerLife :3,
+            cpuPick: null,
+            cpuLife:3,
             counter:3,
-            lifeOfPlayer:3,
-            lifeOfCpu:3,
-            logs:[]
+            winner:'',
+            ready:true
         }
     },
     methods:{
+        onClickPick(value){
+            this.playerPick = value
+        },
         onClickCheck(){
-            if(this.playerType !== null){
-                interval = setInterval(() => {
+            if(this.playerPick !== null){
+                this.cpuPick = null
+                this.ready = false
+                interval = setInterval(()=>{
                 this.counter--
-                if(this.counter === 0){
-                    clearInterval(interval)
-                    this.checkWinner()
-                }
-            }, 1000);
+                    if(this.counter === 0){
+                        this.whatCpuType()
+                        clearInterval(interval)
+                    }
+                },1000)
             }else{
-                alert("속성을 선택해주세요")
+                alert('타입을 골라주세요!')
             }
         },
-        checkWinner(){
-            let cpuPick = Math.random()
-            if(cpuPick <= 0.33){
-                this.cpuType = "fire"
-            }else if(cpuPick <=0.66){
-                this.cpuType = "water"
+        whatCpuType(){
+            let cpuType = Math.random()
+            if(cpuType <= 0.33){
+                this.cpuPick = 'fire'
+            }else if(cpuType <= 0.66){
+                this.cpuPick = "water"
             }else{
-                this.cpuType = "leaf"
+                this.cpuPick = "leaf"
             }
-            if(this.playerType === "fire" && this.cpuType === "water"){
-                this.lifeOfPlayer--
-            }else if(this.playerType === "water" && this.cpuType === "leaf"){
-                this.lifeOfPlayer--
-            }else if(this.playerType === "leaf" && this.cpuType === "fire"){
-                this.lifeOfPlayer--
-            }else if(this.playerType === "water" && this.cpuType === "fire"){
-                this.lifeOfCpu--
-            }else if(this.playerType === "leaf" && this.cpuType === "water"){
-                this.lifeOfCpu--
-            }else if(this.playerType === "fire" && this.cpuType === "leaf"){
-                this.lifeOfCpu--
+            if(this.playerPick === "fire" && this.cpuPick ==="leaf"){
+                this.winner = "PLAYER"
+                this.cpuLife--
+            }else if(this.playerPick === "water" && this.cpuPick ==="fire"){
+                this.winner = "PLAYER"
+                this.cpuLife--
+            }else if(this.playerPick === "leaf" && this.cpuPick ==="water"){
+                this.winner = "PLAYER"
+                this.cpuLife--
+            }else if(this.playerPick === "fire" && this.cpuPick ==="water"){
+                this.winner = "CPU"
+                this.playerLife--
+            }
+            else if(this.playerPick === "leaf" && this.cpuPick ==="fire"){
+                this.winner = "CPU"
+                this.playerLife--
+            }
+            else if(this.playerPick === "water" && this.cpuPick ==="leaf"){
+                this.winner = "CPU"
+                this.playerLife--
+            }else{
+                this.winner ="DRAW!"
+            }
+            if(this.playerLife === 0){
+                setTimeout(()=>{
+                    confirm("플레이어님이 패배하였습니다.")
+                    this.winner = ''
+                    this.playerPick = null
+                    this.playerLife = 3
+                    this.cpuLife = 3
+                    this.cpuPick = null
+                    this.counter = 3
+                },500)
+            }else if(this.cpuLife === 0){
+                setTimeout(()=>{
+                    confirm("플레이어님이 승리하였습니다.")
+                    this.winner = ''
+                    this.playerPick = null
+                    this.playerLife = 3
+                    this.cpuLife = 3
+                    this.cpuPick = null
+                    this.counter = 3
+                },500)
             }
             this.counter = 3
-            let log = `My Type is ${this.playerType} , Cpu Type is ${this.cpuType}`
-            this.logs.unshift(log)
+            this.ready = true
         }
     },
     computed:{
         playerPath(){
-            return require(`../assets/${this.playerType}.png`)
+            return require(`../assets/${this.playerPick}.png`)
         },
         cpuPath(){
-            return require(`../assets/${this.cpuType}.png`)
+            return require(`../assets/${this.cpuPick}.png`)
         }
     }
 }

@@ -5,47 +5,66 @@
     align-items: center;
     justify-content: center;
 }
-
+button{
+    cursor: pointer;
+    background: none;
+}
 .container{
     display: flex;
-    width: 700px;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    h2{
-        text-align: center;
-        font-size: 25px;
-        color: #000;
-    }
     .counter{
+        margin: 0 30px;
         font-size: 40px;
         color: #000;
+        font-weight: bold;
     }
-    .heartWrap{
+    .playerWrap , .cpuWrap{
+        width: 250px;
+        height:500px;
+        text-align: center;
+    }
+    .title{
+        margin: 20px 0 0;
+        color: #000;
+        font-size: 20px;
+    }
+    .lifeWrap{
         img{
-            width: 65px;
-            height: auto;
+            width: 60px;
         }
     }
     .choiceWrap{
-        margin: 10px 0 20px;
-        text-align: center;
-        label{
-            padding: 0 5px;
-            color: #000;
-            font-size: 16px;
+        button{
+            font-size: 30px;
+            transition: all .5s;
+            &:focus{
+                outline: none;
+            }
+            &:nth-child(1):focus{
+                color: red;
+            }
+            &:nth-child(2){
+                margin: 0 20px;
+                &:focus{
+                    color: green;
+                }
+            }
+            &:nth-child(3):focus{
+                color: dodgerblue;
+            }
         }
     }
-    .btns{
-        text-align:center;
-        .checkBtn{
-            display:inline-block;
-            background:none;
-            width:150px;
-            height:30px;
-            border:1px solid #000;
-            border-radius:5px;
-            font-size:16px;
-            cursor:pointer;
+    .infoWrap{
+        margin-top: 15px;
+        button{
+            display: inline-block;
+            width: 200px;
+            height: 30px;
+            border-radius: 5px;
+            font-size: 12px;
+            background: rgb(214, 120, 214);
+            color: #fff;
         }
     }
 }
